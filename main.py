@@ -22,91 +22,87 @@ all_stocks_list = ftse.Build_Market_StockList(detailed_list=False, payeh=True, b
 # print the first 5 items
 print(all_stocks_list.head())
 # print all items
-Tickers = all_stocks_list.index.to_list()
+all_tickers = all_stocks_list.index.to_list()
 # get cummulative weighted index
-CWI_history = ftse.Get_CWI_History(start_date='1392-01-01', end_date='1402-01-01',
+cummulative_weighted_index_history = ftse.Get_cummulative_weighted_index_History(start_date='1392-01-01', end_date='1402-01-01',
                           ignore_date=False, just_adj_close=False,
                           show_weekday=True, double_date=True)
 # change index date to Christian calender
-CWI_history.index = CWI_history['Date']
+cummulative_weighted_index_history.index = cummulative_weighted_index_history['Date']
 
-mpl.plot(CWI_history[-350:], type='candle', mav=(15, 50))
+mpl.plot(cummulative_weighted_index_history[-350:], type='candle', mav=(15, 50))
 plot.show()
 
-mpl.plot(CWI_history[-420:], type='ohlc', mav=(25, 100))
+mpl.plot(cummulative_weighted_index_history[-420:], type='ohlc', mav=(25, 100))
 plot.show()
 
-CWI_history = ftse.Get_CWI_History(start_date='1392-01-01', end_date='1402-01-01',
+cummulative_weighted_index_history = ftse.Get_cummulative_weighted_index_History(start_date='1392-01-01', end_date='1402-01-01',
                           ignore_date=False, just_adj_close=False,
                           show_weekday=True,  double_date=True)
 
-EWI_History = ftse.Get_EWI_History(start_date='1392-01-01', end_date='1402-01-01',
+equal_weighted_index_History = ftse.Get_equal_weighted_index_History(start_date='1392-01-01', end_date='1402-01-01',
                           ignore_date=False, just_adj_close=False,
                           show_weekday=True, double_date=True)
 
-CWI = CWI_history['Adj Close'].to_numpy()
-EWI = EWI_History['Adj Close'].to_numpy()
+cummulative_weighted_index = cummulative_weighted_index_history['Adj Close'].to_numpy()
+equal_weighted_index = equal_weighted_index_History['Adj Close'].to_numpy()
 
 plot.subplot(1, 2, 1)
-plot.plot(CWI, ls='-', lw=1, c='crimson')
-plot.title('Tehran Stock Exchange CWI')
+plot.plot(cummulative_weighted_index, ls='-', lw=1, c='blue')
+plot.title('cummulative_weighted_index')
 plot.xlabel('Time')
-plot.ylabel('Value')
-plot.yscale('log')
+plot.ylabel('price')
+plot.yscale('logarithmic')
 
 plot.subplot(1, 2, 2)
-plot.plot(EWI, ls='-', lw=1, c='crimson')
-plot.title('Tehran Stock Exchange EWI')
+plot.plot(equal_weighted_index, ls='-', lw=1, c='blue')
+plot.title('equal_weighted_index')
 plot.xlabel('Time')
-plot.ylabel('Value')
-plot.yscale('log')
+plot.ylabel('price')
+plot.yscale('logarithmic')
 
 plot.show()
 
-PCC = 100 * stat.pearsonr(CWI, EWI)[0]
+PCC = 100 * stat.pearsonr(cummulative_weighted_index, equal_weighted_index)[0]
 
-plot.scatter(CWI, EWI, s=10, color='crimson')
-plot.title(f'Tehran Stock Exchange CWI & EWI Correlation (PCC: {round(PCC, 2)} %)')
-plot.xlabel('CWI')
-plot.ylabel('EWI')
+plot.scatter(cummulative_weighted_index, equal_weighted_index, s=10, color='blue')
+plot.title(f'cummulative_weighted_index and equal_weighted_index correl. (PCC: {round(PCC, 2)} %)')
+plot.xlabel('cummulative_weighted_index')
+plot.ylabel('equal_weighted_index')
 plot.show()
 
-CWI_logplot = np.log(CWI)
-EWI_logplot = np.log(EWI)
+cummulative_weighted_index_logplot = np.log(cummulative_weighted_index)
+equal_weighted_index_logplot = np.log(equal_weighted_index)
 
-PCC = 100 * stat.pearsonr(CWI_logplot, EWI_logplot)[0]
+PCC = 100 * stat.pearsonr(cummulative_weighted_index_logplot, equal_weighted_index_logplot)[0]
 
-plot.scatter(CWI_logplot, EWI_logplot, s=10, color='crimson')
-plot.title(f'Tehran Stock Exchange log(CWI) & log(EWI) Correlation (PCC: {round(PCC, 2)} %)')
-plot.xlabel('log(CWI)')
-plot.ylabel('log(EWI)')
+plot.scatter(cummulative_weighted_index_logplot, equal_weighted_index_logplot, s=10, color='blue')
+plot.title(f'log(cummulative_weighted_index) & log(equal_weighted_index) correl. (PCC: {round(PCC, 2)} %)')
+plot.xlabel('log(cummulative_weighted_index)')
+plot.ylabel('log(equal_weighted_index)')
 plot.show()
 
-delta_CWI_logplot = CWI_logplot[1:] - CWI_logplot[:-1]
-delta_EWI_logplot = EWI_logplot[1:] - EWI_logplot[:-1]
+delta_cummulative_weighted_index_logplot = cummulative_weighted_index_logplot[1:] - cummulative_weighted_index_logplot[:-1]
+delta_equal_weighted_index_logplot = equal_weighted_index_logplot[1:] - equal_weighted_index_logplot[:-1]
 
-PCC = 100 * stat.pearsonr(delta_CWI_logplot, delta_EWI_logplot)[0]
+PCC = 100 * stat.pearsonr(delta_cummulative_weighted_index_logplot, delta_equal_weighted_index_logplot)[0]
 
-plot.scatter(delta_CWI_logplot, delta_EWI_logplot, s=10, color='crimson')
-plot.title(f'Tehran Stock Exchange delta_(log(CWI)) & delta_(log(EWI)) Correlation (PCC: {round(PCC, 2)} %)')
-plot.xlabel('delta_(log(CWI))')
-plot.ylabel('delta_(log(EWI))')
+plot.scatter(delta_cummulative_weighted_index_logplot, delta_equal_weighted_index_logplot, s=10, color='blue')
+plot.title(f'delta_(log(cummulative_weighted_index)) & delta_(log(equal_weighted_index)) correl. (PCC: {round(PCC, 2)} %)')
+plot.xlabel('delta_(log(cummulative_weighted_index))')
+plot.ylabel('delta_(log(equal_weighted_index))')
 plot.show()
 
-price_history = ftse.Get_Price_History(stock='شصدف',
-                            start_date='1395-01-01', end_date='1402-01-01',
-                            ignore_date=False, adjust_price=True,
-                            show_weekday=True, double_date=True)
+stock_name = 'شصدف'
+price_history = ftse.Get_Price_History(stock=stock_name, start_date='1395-01-01', end_date='1402-01-01',
+                            ignore_date=False, adjust_price=True, show_weekday=True, double_date=True)
 
-headers = ['Open', 'High', 'Low', 'Close', 'Final',
-            'No', 'Ticker', 'Name', 'Part']
+headers = ['Open', 'High', 'Low', 'Close', 'Final', 'No', 'Ticker', 'Name', 'Part']
 
 price_history.drop(columns=headers, axis=1, inplace=True)
 
-RenameDict = {'Adj Open': 'Open',
-              'Adj High': 'High',
-              'Adj Low': 'Low',
-              'Adj Close': 'Close',
+RenameDict = {'Adj Open': 'Open', 'Adj High': 'High',
+              'Adj Low': 'Low', 'Adj Close': 'Close',
               'Adj Final': 'Final'}
 
 price_history.rename(columns=RenameDict, inplace=True)
