@@ -14,39 +14,38 @@ import matplotlib.pyplot as plot
 # set style for plot
 plot.style.use('ggplot')
 
-DF1 = ftse.Build_Market_StockList(detailed_list=False, payeh=True, bourse=True,
+# get all stocks list in each market, i.e. bourse, payeh, and farabourse
+all_stocks_list = ftse.Build_Market_StockList(detailed_list=False, payeh=True, bourse=True,
                                  farabourse=True, show_progress=True,
                                  save_excel=False, save_csv=False)
 
-print(DF1.head())
+# print the first 5 items
+print(all_stocks_list.head())
+# print all items
+Tickers = all_stocks_list.index.to_list()
+# get cummulative weighted index
+CWI_history = ftse.Get_CWI_History(start_date='1392-01-01', end_date='1402-01-01',
+                          ignore_date=False, just_adj_close=False,
+                          show_weekday=True, double_date=True)
+# change index date to Christian calender
+CWI_history.index = CWI_history['Date']
 
-Tickers = DF1.index.to_list()
-
-DF2 = ftse.Get_CWI_History(start_date='1392-01-01',
-                          end_date='1402-01-01',
-                          ignore_date=False,
-                          just_adj_close=False,
-                          show_weekday=True,
-                          double_date=True)
-
-DF2.index = DF2['Date']
-
-mpl.plot(DF2[-200:], type='candle', mav=(15, 50))
+mpl.plot(CWI_history[-350:], type='candle', mav=(15, 50))
 plot.show()
 
-mpl.plot(DF2[-200:], type='ohlc', mav=(15, 70))
+mpl.plot(CWI_history[-420:], type='ohlc', mav=(25, 100))
 plot.show()
 
-DF2 = ftse.Get_CWI_History(start_date='1392-01-01', end_date='1402-01-01',
+CWI_history = ftse.Get_CWI_History(start_date='1392-01-01', end_date='1402-01-01',
                           ignore_date=False, just_adj_close=False,
                           show_weekday=True,  double_date=True)
 
-DF3 = ftse.Get_EWI_History(start_date='1392-01-01', end_date='1402-01-01',
+EWI_History = ftse.Get_EWI_History(start_date='1392-01-01', end_date='1402-01-01',
                           ignore_date=False, just_adj_close=False,
                           show_weekday=True, double_date=True)
 
-CWI = DF2['Adj Close'].to_numpy()
-EWI = DF3['Adj Close'].to_numpy()
+CWI = CWI_history['Adj Close'].to_numpy()
+EWI = EWI_History['Adj Close'].to_numpy()
 
 plot.subplot(1, 2, 1)
 plot.plot(CWI, ls='-', lw=1, c='crimson')
@@ -72,37 +71,37 @@ plot.xlabel('CWI')
 plot.ylabel('EWI')
 plot.show()
 
-logCWI = np.log(CWI)
-logEWI = np.log(EWI)
+CWI_logplot = np.log(CWI)
+EWI_logplot = np.log(EWI)
 
-PCC = 100 * stat.pearsonr(logCWI, logEWI)[0]
+PCC = 100 * stat.pearsonr(CWI_logplot, EWI_logplot)[0]
 
-plot.scatter(logCWI, logEWI, s=10, color='crimson')
+plot.scatter(CWI_logplot, EWI_logplot, s=10, color='crimson')
 plot.title(f'Tehran Stock Exchange log(CWI) & log(EWI) Correlation (PCC: {round(PCC, 2)} %)')
 plot.xlabel('log(CWI)')
 plot.ylabel('log(EWI)')
 plot.show()
 
-difflogCWI = logCWI[1:] - logCWI[:-1]
-difflogEWI = logEWI[1:] - logEWI[:-1]
+delta_CWI_logplot = CWI_logplot[1:] - CWI_logplot[:-1]
+delta_EWI_logplot = EWI_logplot[1:] - EWI_logplot[:-1]
 
-PCC = 100 * stat.pearsonr(difflogCWI, difflogEWI)[0]
+PCC = 100 * stat.pearsonr(delta_CWI_logplot, delta_EWI_logplot)[0]
 
-plot.scatter(difflogCWI, difflogEWI, s=10, color='crimson')
-plot.title(f'Tehran Stock Exchange diff(log(CWI)) & diff(log(EWI)) Correlation (PCC: {round(PCC, 2)} %)')
-plot.xlabel('diff(log(CWI))')
-plot.ylabel('diff(log(EWI))')
+plot.scatter(delta_CWI_logplot, delta_EWI_logplot, s=10, color='crimson')
+plot.title(f'Tehran Stock Exchange delta_(log(CWI)) & delta_(log(EWI)) Correlation (PCC: {round(PCC, 2)} %)')
+plot.xlabel('delta_(log(CWI))')
+plot.ylabel('delta_(log(EWI))')
 plot.show()
 
-DF4 = ftse.Get_Price_History(stock='شصدف',
+price_history = ftse.Get_Price_History(stock='شصدف',
                             start_date='1395-01-01', end_date='1402-01-01',
                             ignore_date=False, adjust_price=True,
                             show_weekday=True, double_date=True)
 
-DropList = ['Open', 'High', 'Low', 'Close', 'Final',
+headers = ['Open', 'High', 'Low', 'Close', 'Final',
             'No', 'Ticker', 'Name', 'Part']
 
-DF4.drop(columns=DropList, axis=1, inplace=True)
+price_history.drop(columns=headers, axis=1, inplace=True)
 
 RenameDict = {'Adj Open': 'Open',
               'Adj High': 'High',
@@ -110,6 +109,6 @@ RenameDict = {'Adj Open': 'Open',
               'Adj Close': 'Close',
               'Adj Final': 'Final'}
 
-DF4.rename(columns=RenameDict, inplace=True)
+price_history.rename(columns=RenameDict, inplace=True)
 
-DF5 = ftse.Get_MarketWatch(save_excel=False)
+market_watch = ftse.Get_MarketWatch(save_excel=False)
