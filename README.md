@@ -8,3 +8,6 @@ This project specifically uses finpy-tse to access Tehran stock market data.
 Any broker such as Mofid securities may be used for manual login. The script should be utilized within daily stocks trading hours.
 ##
 Python along with Selenium act for automatic manipulation of browser functions, i.e. submitting buy/sell orders, set validity time, set number of shares, ...
+##
+Install selenium via pip:
+pip install selenium
