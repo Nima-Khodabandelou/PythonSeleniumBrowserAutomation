@@ -29,7 +29,7 @@ cummulative_weighted_index_history = ftse.Get_cummulative_weighted_index_History
                           show_weekday=True, double_date=True)
 # change index date to Christian calender
 cummulative_weighted_index_history.index = cummulative_weighted_index_history['Date']
-
+# plot
 mpl.plot(cummulative_weighted_index_history[-350:], type='candle', mav=(15, 50))
 plot.show()
 
