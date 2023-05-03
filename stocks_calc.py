@@ -1,6 +1,8 @@
 # numpy and pandas are used for calculation instead of simple list operastions.
+
 import numpy as np
 import pandas as pd
+
 # finpy_ftse is a python package developed to access Tehran stock market data
 import finpy_ftse as ftse
 # for financial plotting purpose
