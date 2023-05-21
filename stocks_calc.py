@@ -11,18 +11,14 @@ import mplfinance as mpl
 
 # calculate statistical functions
 import scipy.stats as stat
-
 # for general plot
 import matplotlib.pyplot as plot
 
-
 # set style for plot
 plot.style.use('ggplot')
-
 # get all stocks list in each market, i.e. bourse, payeh, and farabourse
 all_stocks_list = ftse.Build_Market_StockList(detailed_list=False, payeh=True, bourse=True,
-                                 farabourse=True, show_progress=True,
-                                 save_excel=False, save_csv=False)
+                                 farabourse=True, show_progress=True,                                 save_excel=False, save_csv=False)
 
 # print the first 5 items
 print(all_stocks_list.head())
