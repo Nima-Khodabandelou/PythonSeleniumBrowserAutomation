@@ -5,10 +5,13 @@ import pandas as pd
 
 # finpy_ftse is a python package developed to access Tehran stock market data
 import finpy_ftse as ftse
+
 # for financial plotting purpose
 import mplfinance as mpl
+
 # calculate statistical functions
 import scipy.stats as stat
+
 # for general plot
 import matplotlib.pyplot as plot
 
